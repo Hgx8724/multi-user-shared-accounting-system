@@ -38,15 +38,33 @@ package "身份与账本模块" {
     - createdAt: DateTime
   }
 
-  class "账本成员关系\nLedgerMembership" as LedgerMembership {
+  class "账本成员\nLedgerMembership" as LedgerMembership {
     - id: UUID
     - ledgerId: UUID
     - userId: UUID
+    - status: MembershipStatus
+    + isActive(): Boolean
+    + can(action: ActionType): Boolean
+  }
+
+  class "成员有效期\nMembershipPeriod" as MembershipPeriod {
+    - id: UUID
+    - membershipId: UUID
     - role: LedgerRole
     - joinedAt: DateTime
     - leftAt: DateTime
+    - status: PeriodStatus
     + isActive(): Boolean
-    + can(action: ActionType): Boolean
+  }
+
+  enum "成员状态\nMembershipStatus" as MembershipStatus {
+    ACTIVE
+    INACTIVE
+  }
+
+  enum "有效期状态\nPeriodStatus" as PeriodStatus {
+    ACTIVE
+    ENDED
   }
 
   enum "账本状态\nLedgerStatus" as LedgerStatus {
@@ -67,16 +85,23 @@ package "账目与审批模块" {
     - id: UUID
     - ledgerId: UUID
     - creatorMembershipId: UUID
-    - payerMembershipId: UUID
     - purpose: String
     - occurredAt: DateTime
     - category: PresetCategory
-    - amount: BigDecimal
+    - amount: Decimal
     - remark: String
     - status: EntryStatus
     - lastModifiedAt: DateTime
     - correctionOfEntryId: UUID
     - version: Long
+  }
+
+  class "实际付款\nExpensePayment" as ExpensePayment {
+    - id: UUID
+    - entryId: UUID
+    - payerMembershipId: UUID
+    - amount: Decimal
+    - paidAt: DateTime
   }
 
   enum "账目状态\nEntryStatus" as EntryStatus {
@@ -102,6 +127,7 @@ package "账目与审批模块" {
   class "账目修改记录\nChangeRecord" as ChangeRecord {
     - id: UUID
     - entryId: UUID
+    - changeNo: Long
     - operatorUserId: UUID
     - changedAt: DateTime
     - beforeSnapshot: Json
@@ -117,23 +143,56 @@ package "账目与审批模块" {
     - enabled: Boolean
   }
 
-  class "分摊明细\nSplitShare" as SplitShare {
+  enum "分摊方式\nSplitMethod" as SplitMethod {
+    AVERAGE
+    MANUAL
+  }
+
+  class "分摊请求\nSplitRequest" as SplitRequest {
+    - totalAmount: Decimal
+    - participantIds: List<UUID>
+    - manualAmounts: Map<UUID, Decimal>
+  }
+
+  class "分摊方案\nExpenseSplitPlan" as ExpenseSplitPlan {
     - id: UUID
     - entryId: UUID
+    - strategyType: SplitMethod
+    - participantCount: Int
+    - roundingCursorBefore: Long
+    - roundingCursorAfter: Long
+    - createdAt: DateTime
+  }
+
+  class "轮转公平状态\nRoundingAllocationState" as RoundingAllocationState {
+    - ledgerId: UUID
     - membershipId: UUID
-    - amount: BigDecimal
+    - numerator: BigInt
+    - denominator: BigInt
+    - version: Long
+    - updatedAt: DateTime
+    + addEntitlement(numerator: BigInt, denominator: BigInt): void
+    + consumeOneCent(): void
+  }
+
+  class "分摊明细\nSplitShare" as SplitShare {
+    - id: UUID
+    - planId: UUID
+    - membershipId: UUID
+    - roundingAdjustmentCents: Int
+    - amount: Decimal
   }
 
   interface "分摊策略\nSplitStrategy" as SplitStrategy {
-    + calculate(entry: ExpenseEntry, participants: List<UUID>): List<SplitShare>
+    + split(request: SplitRequest): List<SplitShare>
   }
 
   class "平均分摊策略\nAverageSplitStrategy" as AverageSplitStrategy {
-    + calculate(entry, participants): List<SplitShare>
+    + split(request): List<SplitShare>
   }
 
   class "手工分摊策略\nManualSplitStrategy" as ManualSplitStrategy {
-    + calculate(entry, participants): List<SplitShare>
+    + split(request): List<SplitShare>
   }
 }
 
@@ -143,9 +202,7 @@ package "结算模块" {
     - ledgerId: UUID
     - generatedBy: UUID
     - generatedAt: DateTime
-    - totalAmount: BigDecimal
-    - roundingCursorBefore: Long
-    - roundingCursorAfter: Long
+    - totalAmount: Decimal
     - status: ReportStatus
   }
 
@@ -154,10 +211,8 @@ package "结算模块" {
     - reportId: UUID
     - membershipSnapshotId: UUID
     - displayName: String
-    - exactShareTotal: BigDecimal
-    - exactNetAmount: BigDecimal
-    - finalNetAmount: BigDecimal
-    - closingRoundingAmount: BigDecimal
+    - shareTotalAmount: Decimal
+    - netAmount: Decimal
     - currency: String
   }
 
@@ -166,20 +221,17 @@ package "结算模块" {
     - reportId: UUID
     - debtorMembershipId: UUID
     - creditorMembershipId: UUID
-    - amount: BigDecimal
+    - amount: Decimal
+    - status: TransferStatus
     - currency: String
   }
 
-  class "尾差余额\nRoundingBalance" as RoundingBalance {
-    - ledgerId: UUID
-    - membershipId: UUID
-    - currency: String
-    - amount: BigDecimal
-    - sourceReportId: UUID
-    - version: Long
-    - updatedAt: DateTime
-    + applyDelta(delta: BigDecimal): BigDecimal
+  enum "付款指令状态\nTransferStatus" as TransferStatus {
+    OPEN
+    MARKED_PAID_EXTERNALLY
+    WRITTEN_OFF
   }
+
 }
 
 package "查询、审计与通知模块" {
@@ -209,19 +261,25 @@ UserAccount "1" -- "0..*" AuthBinding : 绑定认证方式 >
 UserAccount "1" -- "0..*" Ledger : 所有 >
 UserAccount "1" -- "0..*" LedgerMembership : 加入 >
 Ledger "1" *-- "1..*" LedgerMembership : 包含 >
-LedgerMembership "0..*" --> "1" LedgerRole : 具有 >
+LedgerMembership "1" *-- "1..*" MembershipPeriod : 有效期 >
+MembershipPeriod "0..*" --> "1" LedgerRole : 具有 >
 Ledger "0..*" --> "1" LedgerStatus : 当前状态 >
 
 ' 账目、审批与分摊
 Ledger "1" o-- "0..*" ExpenseEntry : 记录 >
 LedgerMembership "1" -- "0..*" ExpenseEntry : 创建者 >
-LedgerMembership "1" -- "0..*" ExpenseEntry : 垫付者 >
+ExpenseEntry "1" *-- "1..*" ExpensePayment : 实际付款 >
+ExpensePayment "0..*" --> "1" LedgerMembership : 付款成员 >
+ExpenseEntry "1" -- "1" ExpenseSplitPlan : 分摊方案 >
+ExpenseSplitPlan "1" *-- "1..*" SplitShare : 成员份额 >
+ExpenseSplitPlan --> SplitMethod : 使用 >
+ExpenseSplitPlan ..> SplitRequest : 构造 >
+SplitStrategy ..> SplitRequest : 输入 >
+ExpenseSplitPlan ..> SplitStrategy : 执行 >
 ExpenseEntry "0..*" --> "1" EntryStatus : 当前状态 >
 ExpenseEntry "1" *-- "0..*" ApprovalRequest : 对应申请 >
 ExpenseEntry "1" *-- "0..*" ChangeRecord : 保留修改 >
-ExpenseEntry "1" *-- "1..*" SplitShare : 包含分摊 >
-SplitShare "0..*" --> "1" LedgerMembership : 归属成员 >
-ExpenseEntry ..> SplitStrategy : 计算时使用 >
+SplitShare "0..*" --> "1" LedgerMembership : 分摊成员 >
 SplitStrategy <|.. AverageSplitStrategy
 SplitStrategy <|.. ManualSplitStrategy
 Ledger "1" *-- "0..*" ExemptionRule : 配置 >
@@ -229,32 +287,28 @@ ExemptionRule "0..*" --> "0..1" ExpenseEntry : 可指定账目 >
 
 ' 结算
 Ledger "1" -- "0..*" SettlementReport : 生成 >
+Ledger "1" *-- "0..*" RoundingAllocationState : 公平分配状态 >
+LedgerMembership "1" -- "0..*" RoundingAllocationState : 舍入应得额 >
 SettlementReport "1" *-- "1..*" SettlementLine : 成员明细 >
 SettlementReport "1" *-- "0..*" SettlementTransfer : 付款指令 >
 SettlementTransfer "0..*" --> "1" LedgerMembership : 债务成员 >
 SettlementTransfer "0..*" --> "1" LedgerMembership : 债权成员 >
-Ledger "1" *-- "0..*" RoundingBalance : 保留 >
-LedgerMembership "1" -- "0..*" RoundingBalance : 尾差归属 >
+SettlementTransfer "0..*" --> "1" TransferStatus : 当前状态 >
 
 ' 审计与通知
 Ledger "1" *-- "0..*" AuditLog : 记录操作 >
 UserAccount "1" -- "0..*" Notification : 接收 >
 Notification "0..*" --> "0..1" ExpenseEntry : 关联账目 >
 
-note right of ExpenseEntry
-  金额使用 DECIMAL(20,6) 元保存，用户输入仍精确到分；
-  垫付者只能为当前用户且必须属于本账本；
-  已结清账目禁止修改、删除或撤销。
-end note
-
-note bottom of RoundingBalance
-  尾差按“账本 + 历史成员关系”保存；
-  正数为待收，负数为待付，所有成员尾差之和必须为零。
-  使用最大余数法与账本轮转游标量化到分，用户不能直接修改。
+note bottom of RoundingAllocationState
+  按稳定 LedgerMembership 保存，重新加入不重置；
+  这不是货币余额，只记录累计舍入应得额；
+  用精确分子/分母保存，所有成员应得额之和为零。
 end note
 
 note bottom of SettlementTransfer
   一条付款指令只连接一个债务成员关系和一个债权成员关系；
+  默认状态为 OPEN，系统不自动确认到账；
   同一债务人或债权人可对应多条付款指令。
 end note
 

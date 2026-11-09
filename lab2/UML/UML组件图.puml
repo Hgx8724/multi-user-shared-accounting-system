@@ -53,7 +53,7 @@ QueryModule ..> PermissionModule : 校验查看范围
 EntryModule --> LedgerModule : 读取成员与免审配置
 EntryModule --> AuditModule : 写日志/发通知
 SettlementModule --> EntryModule : 读取未结算账目
-SettlementModule --> LedgerModule : 读取成员与尾差
+SettlementModule --> LedgerModule : 读取成员与历史分摊
 SettlementModule --> AuditModule : 写结算日志
 QueryModule --> LedgerModule : 校验可见账本
 QueryModule --> EntryModule : 查询与筛选账目
@@ -61,7 +61,7 @@ QueryModule --> EntryModule : 查询与筛选账目
 Identity --> Repository : 用户与认证数据
 LedgerModule --> Repository : 账本/成员数据
 EntryModule --> Repository : 账目/审批数据
-SettlementModule --> Repository : 报告/结清/尾差数据
+SettlementModule --> Repository : 报告/结清数据
 QueryModule --> Repository : 只读查询
 AuditModule --> Repository : 日志/通知数据
 Repository --> Database : SQL / 事务
@@ -77,6 +77,7 @@ note bottom of AuditModule
 end note
 
 note bottom of SettlementModule
+  读取冻结的付款与分摊快照，按整数分汇总并匹配收付款；
   仅生成结算报告并标记已结清，
   不执行真实资金转账。
 end note

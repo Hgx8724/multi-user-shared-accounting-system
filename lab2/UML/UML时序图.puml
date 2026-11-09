@@ -18,9 +18,7 @@ participant "API 网关" as Api
 participant "权限策略\nPermissionPolicy" as Permission
 participant "结算服务\nSettlementService" as Settlement
 participant "账目仓储\nEntryRepository" as EntryRepo
-participant "分摊策略\nSplitStrategy" as Split
 participant "结算匹配器\nSettlementMatcher" as Matcher
-participant "尾差余额\nRoundingBalance" as Rounding
 participant "报告仓储\nReportRepository" as ReportRepo
 participant "审计服务\nAuditService" as Audit
 participant "数据库" as Database
@@ -32,31 +30,22 @@ Permission --> Api : 允许
 Api -> Settlement : generateReport(commandId, ledgerId, operatorId)
 
 Settlement -> EntryRepo : findUnsettledEntries(ledgerId)
-EntryRepo --> Settlement : 未结算账目列表
-Settlement -> Rounding : loadOpenBalances(ledgerId, participantIds)
-Rounding --> Settlement : 期初尾差 BigDecimal 映射
+EntryRepo --> Settlement : 账目 + 付款快照 + 分摊明细
 note right of Settlement
   首版为全账本结算，不支持部分选择；
   同一 Idempotency-Key 返回同一报告。
 end note
 
-loop 每条未结算账目
-  Settlement -> Split : calculate(entry, participants)
-  Split --> Settlement : SplitShare[]
-end
-
-Settlement -> Matcher : quantizeAndMatch(exactNets, openingBalances, ledgerCursor)
-Matcher --> Settlement : finalNetCents[] + transfers[] + closingBalances[] + nextCursor
-note right of Matcher
-  最大余数法零和量化到分；
-  债务人与债权人按金额双指针匹配。
+note right of Settlement
+  分摊成员和策略已在账目提交时冻结，
+  结算只读取已确认的付款与分摊快照。
 end note
 
-Settlement -> Rounding : saveClosingBalances(ledgerId, closingBalances)
-Rounding --> Settlement : 更新后的尾差余额
-note right of Rounding
-  按成员关系保存，所有成员尾差之和为零；
-  金额使用 DECIMAL(20,6) 与 BigDecimal。
+Settlement -> Matcher : buildNetAndMatch(entries, payments, splitShares)
+Matcher --> Settlement : netCents[] + transfers[]
+note right of Matcher
+  分摊方案已按整数分冻结；
+  债务人与债权人按金额双指针匹配。
 end note
 
 Settlement -> ReportRepo : save(report, settlementLines, transfers)
@@ -65,7 +54,7 @@ Settlement -> Audit : recordSettlement(ledgerId, operatorId, result)
 Audit -> Database : insert audit log
 Settlement -> Database : COMMIT 事务
 note right of Database
-  报告、付款指令、结清状态、尾差余额和
+  报告、付款指令、结清状态和
   审计日志在同一事务中提交。
 end note
 
