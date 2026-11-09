@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=430, initial-scale=1">
+  <title>合账 · UI 原型</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 5h16"/><path d="M7 12h10"/><path d="M10 19h4"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></symbol>
+    <symbol id="i-user-plus" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></symbol>
+    <symbol id="i-credit-card" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M2 10h20"/></symbol>
+  </svg>
+
+  <section class="device login-screen" data-screen="1">
+    <div class="statusbar dark">
+      <span>9:41</span>
+      <div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery"></span></div>
+    </div>
+    <div class="login-hero">
+      <div class="brand-lockup"><div class="brand-mark"><i></i><i></i><i></i></div><span class="brand-name">合账</span></div>
+      <h1>共同开销，<br>清楚收场。</h1>
+      <p>多人账本、审核记录与结算报告，集中在一个地方。</p>
+      <div class="hero-people">
+        <span class="avatar a">林</span><span class="avatar b">周</span><span class="avatar c">陈</span><span>6 位成员已加入</span>
+      </div>
+    </div>
+    <div class="login-sheet">
+      <h2>登录</h2>
+      <div class="sub">使用你的合账账号继续</div>
+      <label class="field"><svg class="icon"><use href="#i-user"></use></svg><input value="linchuan" aria-label="用户名"></label>
+      <label class="field"><svg class="icon"><use href="#i-lock"></use></svg><input value="••••••••" type="password" aria-label="密码"></label>
+      <div class="login-links"><button>忘记密码</button><button>创建新账号</button></div>
+      <button class="btn primary full">登录并进入账本</button>
+      <div class="app-note"><svg class="icon" style="width:16px;height:16px"><use href="#i-shield"></use></svg><span>身份验证后仅展示你已加入的账本</span></div>
+    </div>
+  </section>
+
+  <section class="device" data-screen="2">
+    <div class="statusbar dark ledger-status">
+      <span>9:41</span>
+      <div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery"></span></div>
+    </div>
+    <div class="ledger-hero">
+      <div class="ledger-switch">
+        <strong>周末合租</strong>
+        <button class="icon-button ghost"><svg class="icon"><use href="#i-chevron-down"></use></svg></button>
+      </div>
+      <div class="ledger-balance">
+        <div><div class="label">本月共同支出</div><div class="amount">¥3,248.60</div></div>
+        <span class="pill teal">6 位成员</span>
+      </div>
+      <div class="ledger-avatars"><span class="avatar a">林</span><span class="avatar b">周</span><span class="avatar c">陈</span><span class="avatar d">许</span><span class="more">+2</span></div>
+    </div>
+    <div class="content">
+      <div class="quick-actions">
+        <button class="quick-action"><svg class="icon"><use href="#i-plus"></use></svg>新增账目</button>
+        <button class="quick-action"><svg class="icon"><use href="#i-users"></use></svg>邀请成员</button>
+        <button class="quick-action"><svg class="icon"><use href="#i-shield"></use></svg>免审规则</button>
+      </div>
+      <div class="section">
+        <div class="section-head"><h2>成员与权限</h2><button class="link">管理</button></div>
+        <div class="card" style="padding: 0 14px">
+          <div class="member-row"><span class="avatar lg a">林</span><div class="member-info"><strong>林川</strong><span>我 · 本月垫付 ¥1,860.00</span></div><div class="member-role"><i class="dot"></i>所有者</div></div>
+          <div class="member-row"><span class="avatar lg b">周</span><div class="member-info"><strong>周可</strong><span>本月垫付 ¥1,088.60</span></div><div class="member-role"><i class="dot" style="background:#d5a82c"></i>管理员</div></div>
+          <div class="member-row"><span class="avatar lg c">陈</span><div class="member-info"><strong>陈默</strong><span>本月垫付 ¥300.00</span></div><div class="member-role"><i class="dot" style="background:#376f91"></i>普通成员</div></div>
+          <div class="member-row"><span class="avatar lg d">许</span><div class="member-info"><strong>许知</strong><span>只能查看和筛选</span></div><div class="member-role"><i class="dot" style="background:#a9b3b0"></i>只读访客</div></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-head"><h2>最近动态</h2><button class="link">全部</button></div>
+        <div class="card" style="padding: 13px 14px; display:flex; gap:10px; align-items:center">
+          <span class="avatar c" style="width:32px;height:32px">陈</span>
+          <div style="flex:1"><div style="font-size:12px;font-weight:700">陈默提交了一笔新增申请</div><div class="muted" style="font-size:10px;margin-top:3px">火锅 · ¥128.00 · 12 分钟前</div></div>
+          <span class="pill gold">待审核</span>
+        </div>
+      </div>
+    </div>
+    <nav class="bottom-nav">
+      <button class="nav-item active"><svg class="icon"><use href="#i-home"></use></svg>账本</button>
+      <button class="nav-item"><svg class="icon"><use href="#i-receipt"></use></svg>账单</button>
+      <button class="nav-item"><svg class="icon"><use href="#i-chart"></use></svg>结算</button>
+      <button class="nav-item"><svg class="icon"><use href="#i-bell"></use></svg>通知</button>
+    </nav>
+  </section>
+
+  <section class="device" data-screen="3">
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery"></span></div>
+    </div>
+    <div class="topbar"><button class="icon-button ghost"><svg class="icon"><use href="#i-chevron-left"></use></svg></button><div class="topbar-title" style="align-items:center"><h1>新增账目</h1><span>提交后进入审核</span></div><button class="link">存草稿</button></div>
+    <div class="content">
+      <div class="amount-block">
+        <div class="amount-label">支出金额</div>
+        <div class="amount-input"><strong>20.00</strong><span>元</span></div>
+        <div class="field-row"><div class="mini-field"><svg class="icon" style="width:16px;height:16px"><use href="#i-calendar"></use></svg>5月18日</div><div class="mini-field"><svg class="icon" style="width:16px;height:16px"><use href="#i-receipt"></use></svg>伙食费</div></div>
+      </div>
+      <div class="section">
+        <div class="section-head"><h2>实际付款</h2><button class="link">添加付款人</button></div>
+        <div class="card" style="padding: 10px 13px">
+          <div class="share-row"><div class="share-person"><span class="avatar a">林</span><strong>林川</strong></div><span class="money">¥13.00</span></div>
+          <div class="share-row"><div class="share-person"><span class="avatar b">周</span><strong>周可</strong></div><span class="money">¥7.00</span></div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-head"><h2>分摊成员</h2><span class="pill teal">已选 3 人</span></div>
+        <div class="member-chips">
+          <button class="member-chip selected"><span class="avatar a">林</span>林川</button>
+          <button class="member-chip selected"><span class="avatar b">周</span>周可</button>
+          <button class="member-chip selected"><span class="avatar c">陈</span>陈默</button>
+          <button class="member-chip" style="opacity:.45"><span class="avatar d">许</span>许知</button>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-head"><h2>分摊方式</h2><span class="muted" style="font-size:11px">必须分完 20.00 元</span></div>
+        <div class="split-control"><button class="active">平均分摊</button><button>手工分摊</button></div>
+        <div class="card" style="padding: 6px 13px;margin-top:9px">
+          <div class="share-row"><div class="share-person"><span class="avatar a">林</span>林川</div><span class="money">¥6.67</span></div>
+          <div class="share-row"><div class="share-person"><span class="avatar b">周</span>周可</div><span class="money">¥6.67</span></div>
+          <div class="share-row"><div class="share-person"><span class="avatar c">陈</span>陈默</div><span class="money">¥6.66</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sticky-action"><button class="btn primary full"><svg class="icon"><use href="#i-check"></use></svg>提交审核</button></div>
+  </section>
+
+  <section class="device" data-screen="4">
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery"></span></div>
+    </div>
+    <div class="topbar"><button class="icon-button ghost"><svg class="icon"><use href="#i-chevron-left"></use></svg></button><div class="topbar-title" style="align-items:center"><h1>审批中心</h1><span>周末合租</span></div><button class="icon-button"><svg class="icon"><use href="#i-filter"></use></svg></button></div>
+    <div class="content">
+      <div class="segmented"><button class="active">待审核 4</button><button>已处理 12</button></div>
+      <div class="card approval-item">
+        <div class="approval-top"><div class="approval-main"><span class="avatar lg c">陈</span><div><strong>新增 · 晚餐</strong><p>陈默提交 · 今天 12:24</p></div></div><span class="pill gold">待审核</span></div>
+        <div class="approval-meta"><div>金额<b>¥128.00</b></div><div>付款人<b>陈默</b></div><div>分摊<b>3 人</b></div></div>
+        <div class="approval-actions"><button class="btn outline small"><svg class="icon" style="width:16px;height:16px"><use href="#i-x"></use></svg>驳回</button><button class="btn primary small"><svg class="icon" style="width:16px;height:16px"><use href="#i-check"></use></svg>批准并生效</button></div>
+      </div>
+      <div class="card approval-item">
+        <div class="approval-top"><div class="approval-main"><span class="avatar b">周</span><div><strong>修改 · 打车</strong><p>周可提交 · 今天 10:06</p></div></div><span class="pill blue">免审命中</span></div>
+        <div class="approval-meta"><div>原金额<b>¥42.00</b></div><div>新金额<b>¥48.00</b></div><div>状态<b>直接生效</b></div></div>
+        <div class="approval-actions"><button class="btn outline small">查看记录</button><button class="btn secondary small">查看账目</button></div>
+      </div>
+    </div>
+    <nav class="bottom-nav"><button class="nav-item"><svg class="icon"><use href="#i-home"></use></svg>账本</button><button class="nav-item active"><svg class="icon"><use href="#i-check"></use></svg>审批</button><button class="nav-item"><svg class="icon"><use href="#i-chart"></use></svg>结算</button><button class="nav-item"><svg class="icon"><use href="#i-bell"></use></svg>通知</button></nav>
+  </section>
+
+  <section class="device" data-screen="5">
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery"></span></div>
+    </div>
+    <div class="topbar"><button class="icon-button ghost"><svg class="icon"><use href="#i-chevron-left"></use></svg></button><div class="topbar-title" style="align-items:center"><h1>结算中心</h1><span>5月账期 · 12 笔未结算</span></div><button class="icon-button"><svg class="icon"><use href="#i-more"></use></svg></button></div>
+    <div class="content">
+      <div class="settlement-summary">
+        <div class="summary-top"><div><span>本批次总支出</span><strong>¥3,248.60</strong></div><span class="pill teal">等待确认</span></div>
+        <div class="net-list">
+          <div class="net-person"><div class="who"><span class="avatar a">林</span>林川</div><span class="positive">+ ¥5.84</span></div>
+          <div class="net-person"><div class="who"><span class="avatar b">周</span>周可</div><span class="positive">+ ¥0.83</span></div>
+          <div class="net-person"><div class="who"><span class="avatar c">陈</span>陈默</div><span class="negative">- ¥6.67</span></div>
+        </div>
+      </div>
+      <div class="section" style="margin-top:16px">
+        <div class="section-head"><h2>收付款建议</h2><span class="muted" style="font-size:11px">系统匹配</span></div>
+        <div class="card transfer-item"><div class="transfer-route"><span class="avatar c" style="width:28px;height:28px;font-size:10px">陈</span><span>C 陈默</span><span class="route-line"></span><span class="avatar a" style="width:28px;height:28px;font-size:10px">林</span><span>A 林川</span></div><div style="text-align:right"><div class="transfer-amount">¥5.84</div><span class="pill gray" style="margin-top:4px">待处理</span></div></div>
+        <div class="card transfer-item"><div class="transfer-route"><span class="avatar c" style="width:28px;height:28px;font-size:10px">陈</span><span>C 陈默</span><span class="route-line"></span><span class="avatar b" style="width:28px;height:28px;font-size:10px">周</span><span>B 周可</span></div><div style="text-align:right"><div class="transfer-amount">¥0.83</div><span class="pill gray" style="margin-top:4px">待处理</span></div></div>
+      </div>
+      <div class="settlement-note">每个账目使用其冻结的分摊成员与分摊方式；这里只读取快照并生成付款指令。</div>
+    </div>
+    <div class="sticky-action"><button class="btn coral full"><svg class="icon"><use href="#i-chart"></use></svg>确认本次结算</button></div>
+    <nav class="bottom-nav"><button class="nav-item"><svg class="icon"><use href="#i-home"></use></svg>账本</button><button class="nav-item"><svg class="icon"><use href="#i-receipt"></use></svg>账单</button><button class="nav-item active"><svg class="icon"><use href="#i-chart"></use></svg>结算</button><button class="nav-item"><svg class="icon"><use href="#i-bell"></use></svg>通知</button></nav>
+  </section>
+
+  <section class="device" data-screen="6">
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery"></span></div>
+    </div>
+    <div class="topbar"><div class="topbar-title"><h1>账单</h1><span>周末合租 · 本月 38 笔</span></div><button class="icon-button"><svg class="icon"><use href="#i-download"></use></svg></button></div>
+    <div class="content">
+      <div class="searchbar"><svg class="icon" style="width:18px;height:18px"><use href="#i-search"></use></svg><span>搜索用途、备注或金额</span></div>
+      <div class="filter-row"><button class="chip selected">全部状态</button><button class="chip">本月</button><button class="chip">伙食费</button><button class="chip"><svg class="icon" style="width:14px;height:14px"><use href="#i-filter"></use></svg></button></div>
+      <div class="bill-date">5月18日 · 今天</div>
+      <div class="bill-item"><span class="bill-icon food"><svg class="icon" style="width:18px;height:18px"><use href="#i-receipt"></use></svg></span><div class="bill-main"><strong>晚餐 · 火锅</strong><span>林川付款 · 3 人分摊</span></div><span class="bill-money">¥128.00</span></div>
+      <div class="bill-item"><span class="bill-icon market"><svg class="icon" style="width:18px;height:18px"><use href="#i-wallet"></use></svg></span><div class="bill-main"><strong>超市日用品</strong><span>周可付款 · 4 人分摊</span></div><span class="bill-money">¥86.40</span></div>
+      <div class="bill-date">5月17日 · 昨天</div>
+      <div class="bill-item"><span class="bill-icon travel"><svg class="icon" style="width:18px;height:18px"><use href="#i-credit-card"></use></svg></span><div class="bill-main"><strong>打车回家</strong><span>陈默付款 · 2 人分摊</span></div><span class="bill-money">¥48.00</span></div>
+      <div class="bill-item"><span class="bill-icon food"><svg class="icon" style="width:18px;height:18px"><use href="#i-receipt"></use></svg></span><div class="bill-main"><strong>早餐</strong><span>林川付款 · 1 人分摊</span></div><span class="bill-money">¥18.00</span></div>
+    </div>
+    <div class="export-bar"><button class="btn primary full"><svg class="icon"><use href="#i-download"></use></svg>导出当前筛选 · 12 条</button></div>
+    <nav class="bottom-nav"><button class="nav-item"><svg class="icon"><use href="#i-home"></use></svg>账本</button><button class="nav-item active"><svg class="icon"><use href="#i-receipt"></use></svg>账单</button><button class="nav-item"><svg class="icon"><use href="#i-chart"></use></svg>结算</button><button class="nav-item"><svg class="icon"><use href="#i-bell"></use></svg>通知</button></nav>
+  </section>
+
+  <section class="device" data-screen="7">
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery"></span></div>
+    </div>
+    <div class="topbar"><button class="icon-button ghost"><svg class="icon"><use href="#i-chevron-left"></use></svg></button><div class="topbar-title" style="align-items:center"><h1>操作日志</h1><span>周末合租 · 审计留痕</span></div><button class="icon-button"><svg class="icon"><use href="#i-filter"></use></svg></button></div>
+    <div class="content">
+      <div class="audit-summary"><div class="audit-stat"><strong>128</strong><span>本月操作</span></div><div class="audit-stat"><strong>12</strong><span>审批结果</span></div><div class="audit-stat"><strong>3</strong><span>撤销动作</span></div></div>
+      <div class="timeline">
+        <div class="timeline-item"><div class="timeline-card"><strong>林川批准了一笔新增申请</strong><p>晚餐 · 火锅 ¥128.00，数据已生效并发送通知。</p><div class="timeline-meta"><span>林川 · 所有者</span><span>今天 12:26</span></div></div></div>
+        <div class="timeline-item warn"><div class="timeline-card"><strong>陈默提交了新增申请</strong><p>分摊成员：林川、周可、陈默；平均分摊 3 人。</p><div class="timeline-meta"><span>陈默 · 普通成员</span><span>今天 12:24</span></div></div></div>
+        <div class="timeline-item"><div class="timeline-card"><strong>周可直接修改了打车账目</strong><p>金额 ¥42.00 → ¥48.00，已保留修改前快照。</p><div class="timeline-meta"><span>周可 · 管理员</span><span>今天 10:06</span></div></div></div>
+        <div class="timeline-item"><div class="timeline-card"><strong>5 月结算报告已生成</strong><p>12 笔账目标记为已结清，付款指令等待线下处理。</p><div class="timeline-meta"><span>林川 · 所有者</span><span>昨天 21:40</span></div></div></div>
+      </div>
+    </div>
+    <nav class="bottom-nav"><button class="nav-item"><svg class="icon"><use href="#i-home"></use></svg>账本</button><button class="nav-item"><svg class="icon"><use href="#i-receipt"></use></svg>账单</button><button class="nav-item"><svg class="icon"><use href="#i-clock"></use></svg>日志</button><button class="nav-item"><svg class="icon"><use href="#i-bell"></use></svg>通知</button></nav>
+  </section>
+
+  <section class="device" data-screen="8">
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="status-icons"><span class="signal"><i></i><i></i><i></i><i></i></span><span>5G</span><span class="battery"></span></div>
+    </div>
+    <div class="topbar"><div class="topbar-title"><h1>通知</h1><span>应用内消息</span></div><button class="link">全部已读</button></div>
+    <div class="content">
+      <div class="notice-tools"><strong>今天</strong><span class="muted" style="font-size:11px">3 条未读</span></div>
+      <div class="notice-item"><span class="notice-icon ok"><svg class="icon" style="width:18px;height:18px"><use href="#i-check"></use></svg></span><div class="notice-body"><strong>新增申请已批准</strong><p>你提交的“晚餐 · 火锅”已生效，分摊金额为 ¥6.67。</p><div class="notice-time">12:26</div></div><i class="unread-dot"></i></div>
+      <div class="notice-item"><span class="notice-icon edit"><svg class="icon" style="width:18px;height:18px"><use href="#i-receipt"></use></svg></span><div class="notice-body"><strong>账目已被修改</strong><p>管理员周可直接修改了“打车回家”，金额变为 ¥48.00。</p><div class="notice-time">10:06</div></div><i class="unread-dot"></i></div>
+      <div class="notice-item"><span class="notice-icon settle"><svg class="icon" style="width:18px;height:18px"><use href="#i-chart"></use></svg></span><div class="notice-body"><strong>5 月结算报告已生成</strong><p>你本次应收 ¥5.84，付款指令已进入待处理状态。</p><div class="notice-time">昨天 21:40</div></div><i class="unread-dot"></i></div>
+      <div class="notice-tools" style="margin-top:20px"><strong>更早</strong></div>
+      <div class="notice-item" style="opacity:.86"><span class="notice-icon ok"><svg class="icon" style="width:18px;height:18px"><use href="#i-user-plus"></use></svg></span><div class="notice-body"><strong>周可加入了账本</strong><p>角色：管理员 · 由所有者林川邀请。</p><div class="notice-time">5月12日</div></div></div>
+      <div class="notice-item" style="opacity:.86"><span class="notice-icon edit"><svg class="icon" style="width:18px;height:18px"><use href="#i-shield"></use></svg></span><div class="notice-body"><strong>免审规则已更新</strong><p>“打车”账目中的备注字段已开启免审。</p><div class="notice-time">5月10日</div></div></div>
+    </div>
+    <nav class="bottom-nav"><button class="nav-item"><svg class="icon"><use href="#i-home"></use></svg>账本</button><button class="nav-item"><svg class="icon"><use href="#i-receipt"></use></svg>账单</button><button class="nav-item"><svg class="icon"><use href="#i-chart"></use></svg>结算</button><button class="nav-item active"><svg class="icon"><use href="#i-bell"></use></svg>通知</button></nav>
+  </section>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const screen = params.get("screen") || "1";
+    document.querySelectorAll("[data-screen]").forEach((node) => {
+      node.classList.toggle("active", node.dataset.screen === screen);
+    });
+  </script>
+</body>
+</html>
