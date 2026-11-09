@@ -1,0 +1,65 @@
+@startuml
+' 行为性图：普通成员提交账目并由管理员审批
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Microsoft YaHei"
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F7FBFF
+skinparam ActivityBorderColor #456B8C
+skinparam ActivityDiamondBackgroundColor #FFF8E8
+skinparam ActivityDiamondBorderColor #A66A00
+skinparam nodesep 35
+skinparam ranksep 35
+
+title UML活动图：账目新增/修改申请与审批流程
+
+|普通成员|
+start
+:登录并选择目标账本;
+:填写收款用途、类别、垫付者、
+金额、分摊方式与备注;
+:提交新增或修改申请;
+
+|系统|
+:校验账本级权限、成员资格、
+垫付者约束与金额;
+if (校验通过?) then (否)
+  |系统|
+  :拒绝提交并返回具体错误;
+  |普通成员|
+  :修正输入;
+  stop
+else (是)
+  |系统|
+  :匹配所有者配置的免审规则;
+  if (命中免审?) then (是)
+    |系统|
+    :直接写入生效账目;
+    :生成修改记录（若为修改）;
+    :记录免审与写入日志;
+    |普通成员|
+    :查看更新后的账本;
+    stop
+  else (否)
+    |系统|
+    :保存待审核申请，原账目暂不改变;
+    :记录申请日志;
+    |管理员|
+    :打开待审核申请并核对内容;
+    if (审批结论?) then (批准)
+      |系统|
+      :申请内容生效;
+      :生成修改记录（若为修改）;
+    else (驳回)
+      |系统|
+      :申请与账目进入已驳回;
+    endif
+    |系统|
+    :记录审批日志;
+    :生成应用内通知;
+    |普通成员|
+    :查看申请处理结果与通知;
+    stop
+  endif
+endif
+
+@enduml

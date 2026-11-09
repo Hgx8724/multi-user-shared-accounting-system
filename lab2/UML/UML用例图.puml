@@ -1,0 +1,98 @@
+@startuml
+' 行为性图：按账本角色展示系统主要用例
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Microsoft YaHei"
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam actorStyle hollow
+skinparam nodesep 34
+skinparam ranksep 48
+left to right direction
+
+title UML用例图：在线多人记账系统主要功能
+
+actor "系统用户" as User
+actor "只读访客" as Viewer
+actor "普通成员" as Member
+actor "管理员" as Admin
+actor "所有者" as Owner
+
+User <|-- Viewer
+User <|-- Member
+User <|-- Admin
+Admin <|-- Owner : 拥有管理员全部权限
+
+rectangle "在线多人记账系统" {
+  package "身份与账本模块" {
+    usecase "登录/认证" as UC_Login
+    usecase "创建账本" as UC_CreateLedger
+    usecase "邀请成员与设置角色" as UC_Member
+    usecase "配置免审规则" as UC_Exempt
+  }
+
+  package "账目与审批模块" {
+    usecase "提交新增/修改申请" as UC_Apply
+    usecase "审批成员申请" as UC_Approve
+    usecase "直接维护或撤销账目" as UC_Maintain
+  }
+
+  package "结算模块" {
+    usecase "发起结算并生成报告" as UC_Settle
+  }
+
+  package "查询、审计与通知模块" {
+    usecase "查看/筛选账目" as UC_View
+    usecase "导出筛选结果" as UC_Export
+    usecase "查看操作日志" as UC_Audit
+    usecase "查看应用内通知" as UC_Notice
+  }
+}
+
+' 通用登录
+User --> UC_Login
+
+' 所有者独有功能
+Owner --> UC_CreateLedger
+Owner --> UC_Member
+Owner --> UC_Exempt
+
+' 管理员功能；所有者通过继承获得
+Admin --> UC_Approve
+Admin --> UC_Maintain
+Admin --> UC_Settle
+Admin --> UC_View
+Admin --> UC_Export
+Admin --> UC_Audit
+Admin --> UC_Notice
+
+' 普通成员功能
+Member --> UC_Apply
+Member --> UC_View
+Member --> UC_Export
+Member --> UC_Notice
+
+' 只读访客功能
+Viewer --> UC_View
+
+note bottom of UC_Apply
+  所有账本操作都包含账本级权限校验与审计留痕；
+  申请命中免审规则时直接生效，否则进入待审核。
+end note
+
+note right of UC_Approve
+  批准或驳回后记录日志，
+  并在应用内通知账目创建者。
+end note
+
+note right of UC_Settle
+  按平均/手工分摊计算净额，
+  报告生成后将纳入账目标记为已结清；
+  系统不执行真实转账。
+end note
+
+note right of UC_Export
+  导出权限仅授予普通成员、管理员和所有者；
+  只读访客只能查看与筛选，不能导出。
+end note
+
+@enduml

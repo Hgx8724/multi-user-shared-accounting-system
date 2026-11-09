@@ -1,0 +1,84 @@
+@startuml
+' 结构性图：模块划分及依赖
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Microsoft YaHei"
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam packageStyle rectangle
+skinparam nodesep 45
+skinparam ranksep 55
+skinparam linetype ortho
+
+title UML组件图：在线多人记账系统整体架构
+
+package "客户端层" {
+  [手机应用\nMobile App] as MobileApp
+  [微信小程序\nMini Program] as MiniProgram
+}
+
+package "接入层" {
+  [API 网关\n鉴权与路由] as ApiGateway
+}
+
+package "业务模块" {
+  [身份与认证\nIdentity & Auth] as Identity
+  [账本与成员\nLedger & Membership] as LedgerModule
+  [账目与审批\nEntry & Approval] as EntryModule
+  [结算\nSettlement] as SettlementModule
+  [查询与导出\nQuery & Export] as QueryModule
+  [审计与通知\nAudit & Notification] as AuditModule
+  [权限策略\nPermission Policy] as PermissionModule
+}
+
+package "数据访问层" {
+  [统一数据访问\nRepositories] as Repository
+  database "业务数据库\nDatabase" as Database
+}
+
+MobileApp --> ApiGateway : HTTPS / JSON
+MiniProgram --> ApiGateway : HTTPS / JSON
+
+ApiGateway --> Identity : 登录与身份校验
+ApiGateway --> LedgerModule : 账本/成员/角色
+ApiGateway --> EntryModule : 账目/审批/免审
+ApiGateway --> SettlementModule : 结算
+ApiGateway --> QueryModule : 查询/导出
+
+Identity ..> PermissionModule : 提供当前用户身份
+LedgerModule ..> PermissionModule : 校验账本角色
+EntryModule ..> PermissionModule : 校验操作权限
+SettlementModule ..> PermissionModule : 校验结算权限
+QueryModule ..> PermissionModule : 校验查看范围
+
+EntryModule --> LedgerModule : 读取成员与免审配置
+EntryModule --> AuditModule : 写日志/发通知
+SettlementModule --> EntryModule : 读取未结算账目
+SettlementModule --> LedgerModule : 读取成员与尾差
+SettlementModule --> AuditModule : 写结算日志
+QueryModule --> LedgerModule : 校验可见账本
+QueryModule --> EntryModule : 查询与筛选账目
+
+Identity --> Repository : 用户与认证数据
+LedgerModule --> Repository : 账本/成员数据
+EntryModule --> Repository : 账目/审批数据
+SettlementModule --> Repository : 报告/结清/尾差数据
+QueryModule --> Repository : 只读查询
+AuditModule --> Repository : 日志/通知数据
+Repository --> Database : SQL / 事务
+
+note right of PermissionModule
+  账本级权限隔离：
+  同一用户在不同账本中的角色分别判断。
+end note
+
+note bottom of AuditModule
+  申请、审批、免审写入、修改、撤销、
+  结算等操作均须留痕。
+end note
+
+note bottom of SettlementModule
+  仅生成结算报告并标记已结清，
+  不执行真实资金转账。
+end note
+
+@enduml

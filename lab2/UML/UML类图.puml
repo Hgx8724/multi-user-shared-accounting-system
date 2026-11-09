@@ -1,0 +1,261 @@
+@startuml
+' 结构性图（必画）：领域类及其关系
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Microsoft YaHei"
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam nodesep 45
+skinparam ranksep 55
+skinparam linetype ortho
+hide empty members
+
+title UML类图：在线多人记账系统领域模型
+
+package "身份与账本模块" {
+  class "用户账号\nUserAccount" as UserAccount {
+    - id: UUID
+    - username: String
+    - credentialHash: String
+    - status: AccountStatus
+    + authenticate(rawPassword: String): Boolean
+    + bindAuthMethod(binding: AuthBinding): void
+  }
+
+  class "认证绑定\nAuthBinding" as AuthBinding {
+    - id: UUID
+    - authType: String
+    - externalSubject: String
+    - userId: UUID
+  }
+
+  class "账本\nLedger" as Ledger {
+    - id: UUID
+    - name: String
+    - ownerId: UUID
+    - status: LedgerStatus
+    - roundingCursor: Long
+    - createdAt: DateTime
+  }
+
+  class "账本成员关系\nLedgerMembership" as LedgerMembership {
+    - id: UUID
+    - ledgerId: UUID
+    - userId: UUID
+    - role: LedgerRole
+    - joinedAt: DateTime
+    - leftAt: DateTime
+    + isActive(): Boolean
+    + can(action: ActionType): Boolean
+  }
+
+  enum "账本状态\nLedgerStatus" as LedgerStatus {
+    ACTIVE
+    ARCHIVED
+  }
+
+  enum "账本角色\nLedgerRole" as LedgerRole {
+    OWNER
+    ADMIN
+    MEMBER
+    VIEWER
+  }
+}
+
+package "账目与审批模块" {
+  class "账目\nExpenseEntry" as ExpenseEntry {
+    - id: UUID
+    - ledgerId: UUID
+    - creatorMembershipId: UUID
+    - payerMembershipId: UUID
+    - purpose: String
+    - occurredAt: DateTime
+    - category: PresetCategory
+    - amount: BigDecimal
+    - remark: String
+    - status: EntryStatus
+    - lastModifiedAt: DateTime
+    - correctionOfEntryId: UUID
+    - version: Long
+  }
+
+  enum "账目状态\nEntryStatus" as EntryStatus {
+    DRAFT
+    PENDING
+    ACTIVE
+    SETTLED
+    REJECTED
+    REVOKED
+  }
+
+  class "审批申请\nApprovalRequest" as ApprovalRequest {
+    - id: UUID
+    - entryId: UUID
+    - applicantMembershipId: UUID
+    - requestType: RequestType
+    - payloadSnapshot: Json
+    - status: ApprovalStatus
+    - submittedAt: DateTime
+    - reviewedAt: DateTime
+  }
+
+  class "账目修改记录\nChangeRecord" as ChangeRecord {
+    - id: UUID
+    - entryId: UUID
+    - operatorUserId: UUID
+    - changedAt: DateTime
+    - beforeSnapshot: Json
+    - afterSnapshot: Json
+  }
+
+  class "免审规则\nExemptionRule" as ExemptionRule {
+    - id: UUID
+    - ledgerId: UUID
+    - targetEntryId: UUID
+    - targetField: String
+    - targetAction: ActionType
+    - enabled: Boolean
+  }
+
+  class "分摊明细\nSplitShare" as SplitShare {
+    - id: UUID
+    - entryId: UUID
+    - membershipId: UUID
+    - amount: BigDecimal
+  }
+
+  interface "分摊策略\nSplitStrategy" as SplitStrategy {
+    + calculate(entry: ExpenseEntry, participants: List<UUID>): List<SplitShare>
+  }
+
+  class "平均分摊策略\nAverageSplitStrategy" as AverageSplitStrategy {
+    + calculate(entry, participants): List<SplitShare>
+  }
+
+  class "手工分摊策略\nManualSplitStrategy" as ManualSplitStrategy {
+    + calculate(entry, participants): List<SplitShare>
+  }
+}
+
+package "结算模块" {
+  class "结算报告\nSettlementReport" as SettlementReport {
+    - id: UUID
+    - ledgerId: UUID
+    - generatedBy: UUID
+    - generatedAt: DateTime
+    - totalAmount: BigDecimal
+    - roundingCursorBefore: Long
+    - roundingCursorAfter: Long
+    - status: ReportStatus
+  }
+
+  class "结算明细\nSettlementLine" as SettlementLine {
+    - id: UUID
+    - reportId: UUID
+    - membershipSnapshotId: UUID
+    - displayName: String
+    - exactShareTotal: BigDecimal
+    - exactNetAmount: BigDecimal
+    - finalNetAmount: BigDecimal
+    - closingRoundingAmount: BigDecimal
+    - currency: String
+  }
+
+  class "结算付款指令\nSettlementTransfer" as SettlementTransfer {
+    - id: UUID
+    - reportId: UUID
+    - debtorMembershipId: UUID
+    - creditorMembershipId: UUID
+    - amount: BigDecimal
+    - currency: String
+  }
+
+  class "尾差余额\nRoundingBalance" as RoundingBalance {
+    - ledgerId: UUID
+    - membershipId: UUID
+    - currency: String
+    - amount: BigDecimal
+    - sourceReportId: UUID
+    - version: Long
+    - updatedAt: DateTime
+    + applyDelta(delta: BigDecimal): BigDecimal
+  }
+}
+
+package "查询、审计与通知模块" {
+  class "操作日志\nAuditLog" as AuditLog {
+    - id: UUID
+    - ledgerId: UUID
+    - actorUserId: UUID
+    - action: ActionType
+    - targetType: String
+    - targetId: UUID
+    - result: String
+    - createdAt: DateTime
+  }
+
+  class "应用内通知\nNotification" as Notification {
+    - id: UUID
+    - recipientUserId: UUID
+    - entryId: UUID
+    - type: NotificationType
+    - content: String
+    - readAt: DateTime
+  }
+}
+
+' 身份与账本
+UserAccount "1" -- "0..*" AuthBinding : 绑定认证方式 >
+UserAccount "1" -- "0..*" Ledger : 所有 >
+UserAccount "1" -- "0..*" LedgerMembership : 加入 >
+Ledger "1" *-- "1..*" LedgerMembership : 包含 >
+LedgerMembership "0..*" --> "1" LedgerRole : 具有 >
+Ledger "0..*" --> "1" LedgerStatus : 当前状态 >
+
+' 账目、审批与分摊
+Ledger "1" o-- "0..*" ExpenseEntry : 记录 >
+LedgerMembership "1" -- "0..*" ExpenseEntry : 创建者 >
+LedgerMembership "1" -- "0..*" ExpenseEntry : 垫付者 >
+ExpenseEntry "0..*" --> "1" EntryStatus : 当前状态 >
+ExpenseEntry "1" *-- "0..*" ApprovalRequest : 对应申请 >
+ExpenseEntry "1" *-- "0..*" ChangeRecord : 保留修改 >
+ExpenseEntry "1" *-- "1..*" SplitShare : 包含分摊 >
+SplitShare "0..*" --> "1" LedgerMembership : 归属成员 >
+ExpenseEntry ..> SplitStrategy : 计算时使用 >
+SplitStrategy <|.. AverageSplitStrategy
+SplitStrategy <|.. ManualSplitStrategy
+Ledger "1" *-- "0..*" ExemptionRule : 配置 >
+ExemptionRule "0..*" --> "0..1" ExpenseEntry : 可指定账目 >
+
+' 结算
+Ledger "1" -- "0..*" SettlementReport : 生成 >
+SettlementReport "1" *-- "1..*" SettlementLine : 成员明细 >
+SettlementReport "1" *-- "0..*" SettlementTransfer : 付款指令 >
+SettlementTransfer "0..*" --> "1" LedgerMembership : 债务成员 >
+SettlementTransfer "0..*" --> "1" LedgerMembership : 债权成员 >
+Ledger "1" *-- "0..*" RoundingBalance : 保留 >
+LedgerMembership "1" -- "0..*" RoundingBalance : 尾差归属 >
+
+' 审计与通知
+Ledger "1" *-- "0..*" AuditLog : 记录操作 >
+UserAccount "1" -- "0..*" Notification : 接收 >
+Notification "0..*" --> "0..1" ExpenseEntry : 关联账目 >
+
+note right of ExpenseEntry
+  金额使用 DECIMAL(20,6) 元保存，用户输入仍精确到分；
+  垫付者只能为当前用户且必须属于本账本；
+  已结清账目禁止修改、删除或撤销。
+end note
+
+note bottom of RoundingBalance
+  尾差按“账本 + 历史成员关系”保存；
+  正数为待收，负数为待付，所有成员尾差之和必须为零。
+  使用最大余数法与账本轮转游标量化到分，用户不能直接修改。
+end note
+
+note bottom of SettlementTransfer
+  一条付款指令只连接一个债务成员关系和一个债权成员关系；
+  同一债务人或债权人可对应多条付款指令。
+end note
+
+@enduml

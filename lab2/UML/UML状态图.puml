@@ -1,0 +1,57 @@
+@startuml
+' 行为性图：账目状态及合法转换
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Microsoft YaHei"
+skinparam shadowing false
+skinparam stateBackgroundColor #F7FBFF
+skinparam stateBorderColor #456B8C
+skinparam ArrowColor #38546D
+skinparam nodesep 55
+skinparam ranksep 55
+
+title UML状态图：账目生命周期
+
+state "草稿\nDraft" as Draft
+state "待审核\nPending" as Pending
+state "生效\nActive" as Active
+state "已结清\nSettled" as Settled
+state "已驳回\nRejected" as Rejected
+state "已撤销\nRevoked" as Revoked
+
+[*] --> Draft : 保存草稿
+[*] --> Pending : 普通成员提交申请
+[*] --> Active : 管理员直接新增 / 命中免审
+
+Draft --> Pending : 提交
+Draft --> Revoked : 删除（统一撤销语义）
+
+Pending --> Draft : 申请人撤回
+Pending --> Active : 管理员批准
+Pending --> Rejected : 管理员驳回
+
+Active --> Active : 修改并生成修改记录
+Active --> Settled : 纳入结算报告
+Active --> Revoked : 撤销/删除/作废
+
+note right of Pending
+  仅申请提交者可撤回；撤回后回到草稿,
+  可修改后重新提交。
+end note
+
+note right of Settled
+  已结清账目禁止修改、删除或撤销；
+  如需订正，新建关联原账目的订正账目。
+end note
+
+note right of Revoked
+  删除、作废与撤销是同一逻辑操作，
+  系统不设置独立的“已作废”状态。
+  首版不提供恢复，订正通过新账目完成。
+end note
+
+note bottom of Rejected
+  驳回记录保持只读；用户可复制该申请
+  为新的草稿后重新提交。
+end note
+
+@enduml
