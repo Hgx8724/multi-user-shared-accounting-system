@@ -11,9 +11,8 @@ skinparam linetype ortho
 
 title UML组件图：在线多人记账系统整体架构
 
-package "客户端层" {
-  [手机应用\nMobile App] as MobileApp
-  [微信小程序\nMini Program] as MiniProgram
+package "客户端层（桌面交付）" {
+  [Windows 桌面应用\nDesktop App] as DesktopApp
 }
 
 package "接入层" {
@@ -35,8 +34,7 @@ package "数据访问层" {
   database "业务数据库\nDatabase" as Database
 }
 
-MobileApp --> ApiGateway : HTTPS / JSON
-MiniProgram --> ApiGateway : HTTPS / JSON
+DesktopApp --> ApiGateway : HTTPS / JSON
 
 ApiGateway --> Identity : 登录与身份校验
 ApiGateway --> LedgerModule : 账本/成员/角色
