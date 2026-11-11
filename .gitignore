@@ -1,2 +1,91 @@
 example/
 *.zip
+
+# .NET build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+publish/
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.rsuser
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.opendb
+*.sdf
+*.opensdf
+*.psess
+*.vsp
+*.vspx
+*.svcd
+_ReSharper*/
+*.DotSettings.user
+
+# VS Code local state; keep shared project configuration.
+**/.vscode/*
+!**/.vscode/settings.json
+!**/.vscode/extensions.json
+!**/.vscode/launch.json
+!**/.vscode/tasks.json
+
+# Test and coverage output
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+coverage.*
+playwright-report/
+test-results/
+
+# Local databases and runtime data
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+data/*.db*
+
+# Logs and temporary files
+*.log
+[Ll]og/
+[Ll]ogs/
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+*.orig
+*.rej
+
+# Local secrets and certificates
+.env
+.env.*
+!.env.example
+*.pfx
+*.snk
+*.secrets.json
+appsettings.Local.json
+appsettings.*.local.json
+
+# Node.js tooling for E2E tests
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
