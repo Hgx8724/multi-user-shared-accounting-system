@@ -1,1 +1,10 @@
-<Solution />
+<Solution>
+  <Project Path="src/ExpenseSplit.Api/ExpenseSplit.Api.csproj" Id="e0cb1db2-e8ef-4f25-84b9-21ceb4f7714b" />
+  <Project Path="src/ExpenseSplit.Application/ExpenseSplit.Application.csproj" Id="afcb4ead-b12e-4cbb-b7f6-88e573326b3e" />
+  <Project Path="src/ExpenseSplit.Contracts/ExpenseSplit.Contracts.csproj" Id="595862da-d596-4f86-bd23-fa1cc48b190b" />
+  <Project Path="src/ExpenseSplit.Desktop/ExpenseSplit.Desktop.csproj" Id="64e01411-f3a6-41b1-8fc1-2e829579c4ec" />
+  <Project Path="src/ExpenseSplit.Domain/ExpenseSplit.Domain.csproj" Id="0d1e98fc-d847-411b-b545-c31b6924ef04" />
+  <Project Path="src/ExpenseSplit.Infrastructure/ExpenseSplit.Infrastructure.csproj" Id="cd9fc4b3-ff6b-40e3-865d-fa71ce911bf6" />
+  <Project Path="src/ExpenseSplit.Web/ExpenseSplit.Web.csproj" Id="f3b46cf7-e637-4649-87c5-7658c21c83bb" />
+  <Project Path="tests/ExpenseSplit.Tests/ExpenseSplit.Tests.csproj" Id="69e014b5-c8a0-4e68-bc38-468e711b3bb3" />
+</Solution>
